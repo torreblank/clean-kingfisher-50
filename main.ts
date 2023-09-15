@@ -4,29 +4,26 @@ import { base32Encode } from 'npm:@ctrl/ts-base32';
 import { Buffer } from 'npm:buffer';
 import * as OTPAuth from "https://deno.land/x/otpauth@v9.1.4/dist/otpauth.esm.js"
 
-const issuer = Deno.env.get("ISSUER")
+const ISSUER = Deno.env.get("ISSUER")
+const LLAVE  = Deno.env.get("LLAVE")
 
-function validaToken(user:string, token_test:string) {
-  //const issuer = '';
-  var   llave  = issuer+user;
-  llave = base32Encode(Buffer(llave));
+function creaTotp(user:string) {
+  const llave = base32Encode(Buffer( LLAVE+user ));
   let totp = new OTPAuth.TOTP({
-    issuer: issuer, label: user, algorithm: "SHA1",
+    issuer: ISSUER, label: user, algorithm: "SHA1",
     digits: 6, period: 30, secret: llave
   });
+  return totp
+}
+function validaToken(user:string, token_test:string) {
+  const   totp = creaTotp(user);
   return (totp.validate({token: token_test, window: 1 }) !== null)
 }
 function tokenNow(user:string) {
-    //const issuer = '';
-    var   llave  = issuer+user;
-    llave = base32Encode(Buffer(llave));
-    let totp = new OTPAuth.TOTP({
-      issuer: issuer, label: user, algorithm: "SHA1",
-      digits: 6, period: 30, secret: llave
-    });
-    // Generate a token as string
-    return totp.generate();
+  const  totp = creaTotp(user);
+  return totp.generate();
 }
+
 const router = new Router();
 router
   .get("/", (context) => {
