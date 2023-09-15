@@ -12,7 +12,7 @@ function validaToken(user:string, token_test:string) {
     issuer: issuer, label: user, algorithm: "SHA1",
     digits: 6, period: 30, secret: llave
   });
-  return (totp.validate({token: token_test, window: 1 }) == null)
+  return (totp.validate({token: token_test, window: 1 }) !== null)
 }
 function tokenNow(user:string) {
     const issuer = 'Plan_Salud';
