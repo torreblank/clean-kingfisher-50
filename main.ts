@@ -14,7 +14,17 @@ function validaToken(user:string, token_test:string) {
   });
   return (totp.validate({token: token_test, window: 1 }) == null)
 }
-
+function tokenNow(user:string) {
+    const issuer = 'Plan_Salud';
+    var   llave  = issuer+user;
+    llave = base32Encode(Buffer(llave));
+    let totp = new OTPAuth.TOTP({
+      issuer: issuer, label: user, algorithm: "SHA1",
+      digits: 6, period: 30, secret: llave
+    });
+    // Generate a token as string
+    return totp.generate();
+}
 const router = new Router();
 router
   .get("/", (context) => {
@@ -25,6 +35,11 @@ router
       context.response.body = "sólo 1 parámetro recibido:"+context.params.user+". Debe ser /user/token";
     }
   })
+  .get("/tokenahora/:user", (context) => {
+    if (context?.params?.user) {
+        context.response.body = tokenNow(context.params.user);
+    }
+  })  
   .get("/:user/:token", (context) => {
     if (context?.params?.token) {
       context.response.body = validaToken(context.params.user, context.params.token);
