@@ -4,9 +4,11 @@ import { base32Encode } from 'npm:@ctrl/ts-base32';
 import { Buffer } from 'npm:buffer';
 import * as OTPAuth from "https://deno.land/x/otpauth@v9.1.4/dist/otpauth.esm.js"
 
+const issuer = Deno.env.get("ISSUER")
+
 function validaToken(user:string, token_test:string) {
-  const issuer = 'Plan_Salud';
-  var   llave    = issuer+user;
+  //const issuer = '';
+  var   llave  = issuer+user;
   llave = base32Encode(Buffer(llave));
   let totp = new OTPAuth.TOTP({
     issuer: issuer, label: user, algorithm: "SHA1",
@@ -15,7 +17,7 @@ function validaToken(user:string, token_test:string) {
   return (totp.validate({token: token_test, window: 1 }) !== null)
 }
 function tokenNow(user:string) {
-    const issuer = 'Plan_Salud';
+    //const issuer = '';
     var   llave  = issuer+user;
     llave = base32Encode(Buffer(llave));
     let totp = new OTPAuth.TOTP({
