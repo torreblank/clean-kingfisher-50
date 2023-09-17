@@ -48,17 +48,15 @@ router
   .get("/", (context) => {
     context.response.body = "[ API tutorial de JTK ]";
   })
-  .get("/encripta/:enctxt", (context) => {
-    if (context?.params?.enctxt) {
-      const dectxt = decodeURIComponent(context.params.enctxt);
-      context.response.body = encodeURIComponent( encripta(dectxt) );
-    }
+  .post("/encripta", (ctx) => {
+   if (ctx.request.headers.has('aencriptar')) {
+     ctx.response.body = encripta( ctx.request.headers.get('aencriptar') );
+   }
   })
-  .get("/decripta/:enctxt", (context) => {
-    if (context?.params?.enctxt) {
-      const dectxt = decodeURIComponent(context.params.enctxt);
-      context.response.body = encodeURIComponent( decripta(dectxt) );
-    }
+  .post("/decripta", (ctx) => {
+   if (ctx.request.headers.has('adecriptar')) {
+     ctx.response.body = decripta( ctx.request.headers.get('adecriptar') );
+   }
   })
   .get("/tokenahora/:user", (context) => {
     if (context?.params?.user) {
