@@ -7,28 +7,29 @@ import { Aes }          from "https://deno.land/x/crypto/aes.ts";
 import { Cbc, Padding } from "https://deno.land/x/crypto/block-modes.ts";
 import * as base64      from "https://deno.land/std/encoding/base64.ts";
 
-const ISSUER = Deno.env.get("ISSUER")
-const LLAVE  = Deno.env.get("LLAVE")
+const ISSUER    = Deno.env.get("ISSUER")
+const LLAVE     = Deno.env.get("LLAVE")
+const LLAVECRYP = Deno.env.get("LLAVECRYP")
 
-function encripta(texto: string) {
-  const LLAVE = new TextEncoder("utf-8").encode("Contraseña123456").subarray(0,16);
-  const iv = new Uint8Array(16);
-  let data = new TextEncoder("utf-8").encode(texto);
+function encripta(texto:string, arr_size=16) {
+  const LLAVE     = new TextEncoder().encode(LLAVECRYP).subarray(0,arr_size);
+  const iv        = new Uint8Array(arr_size);
+  let data        = new TextEncoder().encode(texto);
   const cipher    = new Cbc(Aes, LLAVE, iv, Padding.PKCS7);
   const encrypted = cipher.encrypt(data);
   return base64.encode(encrypted) ;
 }
-function decripta(texto: string) {
-  const LLAVE = new TextEncoder("utf-8").encode("Contraseña123456").subarray(0,16);
-  const iv = new Uint8Array(16);
+function decripta(texto: string, arr_size=16) {
+  const LLAVE     = new TextEncoder().encode(LLAVECRYP).subarray(0,arr_size);
+  const iv        = new Uint8Array(arr_size);
   const decipher  = new Cbc(Aes, LLAVE, iv, Padding.PKCS7);
   const encrypted = decipher.decrypt(base64.decode(texto));
-  return new TextDecoder("utf-8").decode( encrypted ) ;
+  return new TextDecoder().decode( encrypted ) ;
 }
 
 function creaTotp(user:string) {
-  const llave = base32.encode(new TextEncoder("utf-8").encode( LLAVE+user ));
-  let totp = new OTPAuth.TOTP({
+  const llave = base32.encode(new TextEncoder().encode( LLAVE+user ));
+  let totp    = new OTPAuth.TOTP({
     issuer: ISSUER, label: user, algorithm: "SHA1",
     digits: 6, period: 30, secret: llave
   });
@@ -51,22 +52,22 @@ router
   .post("/encripta", (ctx) => {
    if (ctx.request.headers.has('aencriptar')) {
      ctx.response.body = encripta( ctx.request.headers.get('aencriptar') );
-   } else {ctx.response.body = 'Sin dato a encriptar';}
+   } else {ctx.response.body = 'ERROR: Sin dato a encriptar';}
   })
   .post("/decripta", (ctx) => {
    if (ctx.request.headers.has('adecriptar')) {
      ctx.response.body = decripta( ctx.request.headers.get('adecriptar') );
-   } else {ctx.response.body = 'Sin dato a decriptar';}
+   } else {ctx.response.body = 'ERROR: Sin dato a decriptar';}
   })
   .get("/tokenahora/:user", (context) => {
     if (context?.params?.user) {
         context.response.body = tokenNow(context.params.user);
-    } else {ctx.response.body = 'Falta parámetro';}
+    } else {ctx.response.body = 'ERROR: Falta parámetro';}
   })  
   .get("/tokenvalida/:user/:token", (context) => {
     if (context?.params?.token) {
       context.response.body = validaToken(context.params.user, context.params.token);
-    } else {ctx.response.body = 'Sin parámetros completos';}
+    } else {ctx.response.body = 'ERROR: Sin parámetros completos';}
   });
 
 const app = new Application();
