@@ -51,22 +51,22 @@ router
   .post("/encripta", (ctx) => {
    if (ctx.request.headers.has('aencriptar')) {
      ctx.response.body = encripta( ctx.request.headers.get('aencriptar') );
-   }
+   } else {ctx.response.body = 'Sin dato a encriptar';}
   })
   .post("/decripta", (ctx) => {
    if (ctx.request.headers.has('adecriptar')) {
      ctx.response.body = decripta( ctx.request.headers.get('adecriptar') );
-   }
+   } else {ctx.response.body = 'Sin dato a decriptar';}
   })
   .get("/tokenahora/:user", (context) => {
     if (context?.params?.user) {
         context.response.body = tokenNow(context.params.user);
-    }
+    } else {ctx.response.body = 'Falta parámetro';}
   })  
   .get("/:user/:token", (context) => {
     if (context?.params?.token) {
       context.response.body = validaToken(context.params.user, context.params.token);
-    }
+    } else {ctx.response.body = 'Sin parámetros completos';}
   });
 
 const app = new Application();
