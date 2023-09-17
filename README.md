@@ -1,8 +1,7 @@
 # REST API
 
 A template of REST API app using Oak framework
-Se valida un TOTP invocando {usuario}/{token_a_validar]
-
+A partir del código demo, exploro funcionalidades.
 Start the server with the command:
 
 ```
