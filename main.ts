@@ -63,7 +63,7 @@ router
         context.response.body = tokenNow(context.params.user);
     } else {ctx.response.body = 'Falta parámetro';}
   })  
-  .get("/:user/:token", (context) => {
+  .get("/tokenvalida/:user/:token", (context) => {
     if (context?.params?.token) {
       context.response.body = validaToken(context.params.user, context.params.token);
     } else {ctx.response.body = 'Sin parámetros completos';}
