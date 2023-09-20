@@ -24,7 +24,6 @@ async function encripta(data:string) {
     return base64.encode(encrypted_data);
 }
 async function decripta(data:any) {
-    data = base64.decode(data);
     const iv = new Uint8Array(
                new TextEncoder().encode(LLAVECRYP).subarray(0,16));
     const key =new Uint8Array( 
@@ -32,10 +31,15 @@ async function decripta(data:any) {
     const key_encoded = await crypto.subtle.importKey(
         "raw", key.buffer, ALGORITMO, true, ["encrypt", "decrypt"],
     );
-    const decrypted = await window.crypto.subtle.decrypt(
-      {name:ALGORITMO, iv:iv,}, key_encoded, data,
-    );
-    return new TextDecoder().decode(decrypted);
+    try {
+      const decrypted = await window.crypto.subtle.decrypt(
+        {name:ALGORITMO, iv:iv,}, key_encoded, 
+         base64.decode(data),
+      );
+      return new TextDecoder().decode(decrypted);
+    } catch(e) {
+      return "";
+    }
 }
 
 function creaTotp(user:string) {
