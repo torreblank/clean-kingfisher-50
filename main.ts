@@ -1,8 +1,8 @@
-import { Application, Router } from "https://deno.land/x/oak@v12.6.1/mod.ts";
-import { oakCors }      from "https://deno.land/x/cors@v1.2.2/mod.ts";
-import * as OTPAuth     from "https://deno.land/x/otpauth@v9.1.4/dist/otpauth.esm.js"
-import * as base32      from "https://deno.land/std/encoding/base32.ts";
-import * as base64      from "https://deno.land/std/encoding/base64.ts";
+import { Application, Router } from "https://deno.land/x/oak/mod.ts";
+import { oakCors }   from "https://deno.land/x/cors/mod.ts";
+import * as OTPAuth  from "https://deno.land/x/otpauth/dist/otpauth.esm.js"
+import * as base32   from "https://deno.land/std/encoding/base32.ts";
+import * as base64   from "https://deno.land/std/encoding/base64.ts";
 
 const ISSUER    = Deno.env.get("ISSUER");
 const LLAVE     = Deno.env.get("LLAVE");
