@@ -4,10 +4,13 @@ import * as OTPAuth     from "https://deno.land/x/otpauth@v9.1.4/dist/otpauth.es
 import * as base32      from "https://deno.land/std/encoding/base32.ts";
 import * as base64      from "https://deno.land/std/encoding/base64.ts";
 
-const ISSUER    = Deno.env.get("ISSUER")
-const LLAVE     = Deno.env.get("LLAVE")
-const LLAVECRYP = Deno.env.get("LLAVECRYP")
-const DECRPATH  = Deno.env.get("DECRPATH")
+const ISSUER    = Deno.env.get("ISSUER");
+const LLAVE     = Deno.env.get("LLAVE");
+const LLAVECRYP = Deno.env.get("LLAVECRYP");
+const DECRPATH  = Deno.env.get("DECRPATH");
+const ENCRPATH  = Deno.env.get("ENCRPATH");
+const TOKENOW   = Deno.env.get("TOKENOW");
+const VALIDTOK  = Deno.env.get("VALIDTOK");
 const ALGORITMO = "AES-GCM";
 
 async function encripta(data:string) {
@@ -64,7 +67,7 @@ router
   .get("/", (ctx:any) => {
     ctx.response.body = "[ API tutorial de JTK ]";
   })
-  .post("/encripta", (ctx:any) => {
+  .post("/"+ENCRPATH, (ctx:any) => {
    if (ctx.request.headers.has('aencriptar')) {
        ctx.response.body = (async() => {return( await encripta(ctx.request.headers.get('aencriptar')) )});
    } else {ctx.response.body = 'Sin dato a encriptar';}
@@ -74,12 +77,12 @@ router
        ctx.response.body = (async() => {return( await decripta(ctx.request.headers.get('adecriptar')) )});
    } else {ctx.response.body = 'Sin dato a decriptar';}
   })
-  .get("/tokenahora/:user", (ctx:any) => {
+  .get("/"+TOKENOW+"/:user", (ctx:any) => {
     if (ctx?.params?.user) {
         ctx.response.body = tokenNow(ctx.params.user);
     } else {ctx.response.body = 'ERROR: Falta parámetro';}
   })  
-  .get("/tokenvalida/:user/:token", (ctx:any) => {
+  .get("/"+VALIDTOK+"/:user/:token", (ctx:any) => {
     if (ctx?.params?.token) {
       ctx.response.body = validaToken(ctx.params.user, ctx.params.token);
     } else {ctx.response.body = 'ERROR: Sin parámetros completos';}
