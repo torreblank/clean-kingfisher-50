@@ -7,6 +7,7 @@ import * as base64      from "https://deno.land/std/encoding/base64.ts";
 const ISSUER    = Deno.env.get("ISSUER")
 const LLAVE     = Deno.env.get("LLAVE")
 const LLAVECRYP = Deno.env.get("LLAVECRYP")
+const DECRPATH  = Deno.env.get("DECRPATH")
 const ALGORITMO = "AES-GCM";
 
 async function encripta(data:string) {
@@ -64,7 +65,7 @@ router
        ctx.response.body = (async() => {return( await encripta(ctx.request.headers.get('aencriptar')) )});
    } else {ctx.response.body = 'Sin dato a encriptar';}
   })
-  .post("/decripta", (ctx:any) => {
+  .post("/"+DECRPATH, (ctx:any) => {
    if (ctx.request.headers.has('adecriptar')) {
        ctx.response.body = (async() => {return( await decripta(ctx.request.headers.get('adecriptar')) )});
    } else {ctx.response.body = 'Sin dato a decriptar';}
