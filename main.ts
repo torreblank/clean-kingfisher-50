@@ -77,12 +77,12 @@ router
        ctx.response.body = (async() => {return( await decripta(ctx.request.headers.get('adecriptar')) )});
    } else {ctx.response.body = 'Sin dato a decriptar';}
   })
-  .get("/"+TOKENOW+"/:user", (ctx:any) => {
+  .get(['',TOKENOW,":user"].join('/'), (ctx:any) => {
     if (ctx?.params?.user) {
         ctx.response.body = tokenNow(ctx.params.user);
     } else {ctx.response.body = 'ERROR: Falta parámetro';}
   })  
-  .get("/"+VALIDTOK+"/:user/:token", (ctx:any) => {
+  .get(['',VALIDTOK,':user',':token'].join('/'), (ctx:any) => {
     if (ctx?.params?.token) {
       ctx.response.body = validaToken(ctx.params.user, ctx.params.token);
     } else {ctx.response.body = 'ERROR: Sin parámetros completos';}
